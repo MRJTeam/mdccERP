@@ -6,7 +6,9 @@ const getAllChannel = function()
     return 'SELECT channel_id as channelId,channel_name as channelName  FROM table_channel WHERE channel_active = 1'
 }
 const addChannel = ()=>{
-    return "INSERT INTO `MDDB`.`table_channel`(`channel_id`, `channel_name`, `channel_descrpition`, `channel_edit_time`, `channel_active`) VALUES (?,?,?,NOW(),1) "
+    return "INSERT INTO `table_channel`" +
+        "(`channel_id`, `channel_name`, `channel_descrpition`, `channel_edit_time`, `channel_active`) " +
+        "VALUES (?,?,?,NOW(),1) "
 }
 module.exports = {
     getAllChannel,

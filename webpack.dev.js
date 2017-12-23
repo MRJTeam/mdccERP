@@ -2,7 +2,7 @@
  * Created by shenqiao on 2017/12/20.
  */
 const path = require('path')
-const root = __dirname+'/web'
+const root = __dirname + '/web'
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 console.log(root);

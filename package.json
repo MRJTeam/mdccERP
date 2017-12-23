@@ -8,7 +8,6 @@
     "build": "babel --presets react src --out-dir build --watch",
     "web": "webpack-dev-server --config webpack.dev.js",
     "start": "node ./server/index.js"
-
   },
   "author": "",
   "license": "ISC",
@@ -23,8 +22,13 @@
     "webpack-dev-server": "^2.9.7"
   },
   "dependencies": {
-    "antd-mobile": "^2.1.2",
+    "antd": "^3.0.3",
+    "axios": "^0.17.1",
+    "babel-plugin-import": "^1.6.3",
     "express": "^4.16.2",
+    "jquery": "^3.2.1",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
     "mysql": "^2.15.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"

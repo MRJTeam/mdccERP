@@ -9,8 +9,7 @@ const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 const render = () => {
     ReactDOM.render(
-        layout(),
-        //<Container/>,
+        <Container/>,
         document.getElementById('app')
     )
 }
@@ -22,7 +21,7 @@ const layout = ()=>
                 <div className="logo" />
                 <Menu
                     theme="dark"
-                    mode="horizontal"
+                    mode="vertical"
                     defaultSelectedKeys={['2']}
                     style={{ lineHeight: '64px' }}
                 >

@@ -43,7 +43,7 @@ const API_MAP = {
 
     //员工相关
     addStaff: '/staff/addStaff',//添加员工
-    deleteStaff: '/staff/delteStaff',//删除员工
+    deleteStaff: '/staff/deleteStaff',//删除员工
     editStaff: '/staff/editStaff',//添加员工
     getAllStaff: '/staff/getAllStaff',//获取所有员工信息
 
@@ -186,9 +186,9 @@ const httCallBack = (req, res)=> {
         }
             break;
         case API_MAP.getAllStaff:
-            sqlExecute(getAllStaff(), (result)=> {
+            sqlExecute(getAllStaff(),null, (result)=> {
                 if (result) {
-                    res.send(packageData(STATUS_CODE.SUCCESS, req.path, null))
+                    res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                 } else {
                     res.send(packageData(STATUS_CODE.SERVER_ERROR, req.path, null))
                 }
@@ -211,12 +211,12 @@ const sqlExecute = (sql, param, callBack)=> {
     db.con(connect=> {
         if (param) {
             connect.query(sql, param, (err, result)=> {
-                err && console.log(sql);
+                err && console.log(err);
                 callBack && callBack(err ? null : result)
             })
         } else {
             connect.query(sql, (err, result)=> {
-                err && console.log(sql);
+                err && console.log(err);
                 callBack && callBack(err ? null : result)
             })
         }
@@ -267,7 +267,28 @@ function uuid(len, radix) {
 
     return uuid.join('');
 }
-app.all('*', (req, res)=> {
+app.all('*',(req, res,next)=>{
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    next();
+})
+app.post('*', function (req, res) {
+    switch (req.method) {
+        case HTTPMETHOD.GET:
+            req.objs = req.query;
+            getCallBack(req, res);
+            break;
+        case HTTPMETHOD.POST:
+            req.objs = req.body;
+            postCallBack(req, res);
+            break;
+        default:
+            res.status(400).end();
+    }
+})
+app.get('*', function (req, res) {
     switch (req.method) {
         case HTTPMETHOD.GET:
             req.objs = req.query;
@@ -282,50 +303,8 @@ app.all('*', (req, res)=> {
     }
 })
 
-//app.get(apiMap.getAllCustomer, function (req, res) {
-//    db.con(function(connect){
-//        connect.query(getAllCustomer(), function(err, result){
-//            if (err) {
-//                console.log("select username:" + username + " error, the err information is " + err);
-//                return
-//            }else {
-//                res.send({
-//                    status:statusCode.success,
-//                    msg:apiMap.getAllCustomer,
-//                    data:result,
-//                })
-//            }
-//            console.log(result)
-//        })
-//    })
-//})
-//app.get(apiMap.getAllChannel, function (req, res) {
-//    db.con(function(connect){
-//        connect.query(getAllChannel(), function(err, result){
-//            if (err) {
-//                console.log(getAllChannel());
-//                return
-//            }else {
-//                res.send({
-//                    status:statusCode.success,
-//                    msg:apiMap.getAllChannel,
-//                    data:result,
-//                })
-//            }
-//            console.log(result)
-//        })
-//    })
-//})
-
 
 app.listen(_port ? _port : 9527, function (x) {
     console.log('Example app listening on port 9527!')
 })
 
-
-//app.get("/",(req,res)=>{
-//    res.sendFile("index.html",{root:__dirname})
-//}
-//app.listen(9527, function () {
-//    console.log('Example app listening on port 8080!')
-//})

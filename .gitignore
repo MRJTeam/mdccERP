@@ -1,0 +1,5 @@
+# dirctory
+node_modules/
+.idea/
+# files
+npm-debug.log

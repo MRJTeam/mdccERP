@@ -1,10 +1,14 @@
+
+/**
+ * Created by shenqiao on 2017/12/26.
+ */
 import {BaseHandler,API_MAP} from '../index'
 
-export const ChannelHandler =
+export const SegmentHandler =
 {
-    getAllChannel:(success,failed)=>{
+    getAllSegment:(success,failed)=>{
         BaseHandler.postHttpRequest(
-            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.getAllChannel),
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.getAllSegment),
             {},
             (successData)=>{
                 let data = successData.data;

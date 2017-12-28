@@ -1,10 +1,14 @@
+
+/**
+ * Created by shenqiao on 2017/12/26.
+ */
 import {BaseHandler,API_MAP} from '../index'
 
-export const ChannelHandler =
+export const StaffHandler =
 {
-    getAllChannel:(success,failed)=>{
+    getAllStaff:(success,failed)=>{
         BaseHandler.postHttpRequest(
-            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.getAllChannel),
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.getAllStaff),
             {},
             (successData)=>{
                 let data = successData.data;

@@ -76,13 +76,13 @@ export default class Container extends Component {
     }
     loadData()
     {
-        CustomerHandler.getAllCustomer((data)=>{
-            this.setState({
-                customer:data
-            })
-        },(faile)=>{
-
-        })
+        this.loadCustomer();
+        this.loadChannel();
+        this.loadSegment();
+        this.loadStaff();
+    }
+    loadStaff()
+    {
         StaffHandler.getAllStaff((data)=>{
             this.setState({
                 staff:data
@@ -90,13 +90,9 @@ export default class Container extends Component {
         },(faile)=>{
 
         })
-        ChannelHandler.getAllChannel((data)=>{
-            this.setState({
-                channel:data
-            })
-        },(faile)=>{
-
-        })
+    }
+    loadSegment()
+    {
         SegmentHandler.getAllSegment((data)=>{
             this.setState({
                 segment:data
@@ -104,7 +100,26 @@ export default class Container extends Component {
         },(faile)=>{
 
         })
+    }
+    loadChannel()
+    {
+        ChannelHandler.getAllChannel((data)=>{
+            this.setState({
+                channel:data
+            })
+        },(faile)=>{
 
+        })
+    }
+    loadCustomer()
+    {
+        CustomerHandler.getAllCustomer((data)=>{
+            this.setState({
+                customer:data
+            })
+        },(faile)=>{
+
+        })
     }
     content(index) {
         switch (parseInt(index)) {
@@ -125,7 +140,7 @@ export default class Container extends Component {
                 break;
             case 3:
                 return (<div>
-                    <ChannelViewController />
+                    <ChannelViewController delegate={()=>this.loadChannel()} channel={this.state.channel}/>
                 </div>)
                 break;
             case 4:

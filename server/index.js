@@ -223,19 +223,6 @@ const sqlExecute = (sql, param, callBack)=> {
 
     })
 }
-//async function doSometing(sql, param){
-//    var f1 = await sqlExecute(sql, param);
-//    console.log(f1);
-//    //var f2 = await sqlExecute(bindCustomerAndChannel(),bindCustomerAndChannelParam,(val1)=>{
-//    //
-//    //});
-//    //var f3 = await sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,(val1)=>{
-//    //
-//    //});
-//    //var f4 = await sqlExecute(bindCustomerAndStaff(),bindCustomerAndStaffParam,(val1)=>{
-//    //
-//    //});
-//}
 const getUuid = ()=> {
     return uuid(11, 16)
 }

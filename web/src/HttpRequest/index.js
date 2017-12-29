@@ -36,9 +36,7 @@ const BaseHandler = {
     },
     postHttpRequest:(url,params,success,fail)=>{
         console.log(url);
-        axios.post(url,{
-            params:params
-        }).then((response)=>{
+        axios.post(url,params).then((response)=>{
                 console.log(response);
                 success(response);
             })
@@ -48,9 +46,7 @@ const BaseHandler = {
             });
     },
     getHttpReauest:(url,params,success,fail)=>{
-        axios.get(url,{
-                params:params
-        }).then((response)=>{
+        axios.get(url,params).then((response)=>{
                 success(response);
                 console.log(response);
             })

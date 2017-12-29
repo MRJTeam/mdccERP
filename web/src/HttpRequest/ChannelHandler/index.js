@@ -10,10 +10,22 @@ export const ChannelHandler =
                 let data = successData.data;
                 success(data&&data.data?data.data:[])
             },
-            (failedData)=>{
+            (failed)=>{
                 success([])
             }
         )
-    }
+    },
+    AddChannel:(param,success,failed)=>{
+        BaseHandler.postHttpRequest(
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.addChannel),
+            param,
+            (successData)=>{
+                success(successData)
+            },
+            (failed)=>{
+                success()
+            }
+        )
+    },
 
 }

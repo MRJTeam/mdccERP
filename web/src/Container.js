@@ -22,9 +22,10 @@ import {ChannelHandler} from './HttpRequest/ChannelHandler'
 import {SegmentHandler} from './HttpRequest/SegmentHandler'
 const menu = [
     '客户管理',
-    '分段管理',
+    '时段管理',
     '渠道管理',
-    '员工管理'
+    '员工管理',
+    '成交客户',
 ]
 
 export default class Container extends Component {
@@ -94,6 +95,7 @@ export default class Container extends Component {
     loadSegment()
     {
         SegmentHandler.getAllSegment((data)=>{
+            console.log(data)
             this.setState({
                 segment:data
             })
@@ -130,12 +132,13 @@ export default class Container extends Component {
                         staff={this.state.staff?this.state.staff:[]}
                         channel={this.state.channel?this.state.channel:[]}
                         segment={this.state.segment?this.state.segment:[]}
+                        delegate={()=>this.loadCustomer()}
                     />
                 </div>)
                 break;
             case 2:
                 return (<div>
-                    <SegmentViewController />
+                    <SegmentViewController segment={this.state.segment} delegate={()=>this.loadSegment()} />
                 </div>)
                 break;
             case 3:
@@ -144,7 +147,7 @@ export default class Container extends Component {
                 </div>)
                 break;
             case 4:
-                return (<StaffViewController />)
+                return (<StaffViewController delegate={()=>this.loadStaff()} staff={this.state.staff}/>)
                 break;
             default:
                 return null

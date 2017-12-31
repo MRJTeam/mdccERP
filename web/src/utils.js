@@ -8,7 +8,6 @@ export const valiedString = (str,maxLength)=>{
     {
         return false;
     }
-
     if(!str)
     {
         return false;
@@ -17,3 +16,12 @@ export const valiedString = (str,maxLength)=>{
     }
 
 }
+
+export  const checkPhone = (phone)=>{
+    if(!(/^1[34578]\d{9}$/.test(phone))){
+        return false;
+    }else {
+        return true;
+    }
+}
+

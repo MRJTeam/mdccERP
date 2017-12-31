@@ -45,13 +45,7 @@ export  default class ChannelViewController extends Component
     }
     loadData()
     {
-        //ChannelHandler.getAllChannel((data)=>{
-        //    this.setState({
-        //        dataSource:data
-        //    })
-        //},(faile)=>{
-        //
-        //})
+
     }
     okClicked()
     {
@@ -62,13 +56,11 @@ export  default class ChannelViewController extends Component
         }else{
             message.warning('请输入有效的内容',1);
         }
-
     }
     delegate()
     {
         if(this.props.delegate)
         {
-            console.log('zhixhuid')
             this.props.delegate()
         }
     }

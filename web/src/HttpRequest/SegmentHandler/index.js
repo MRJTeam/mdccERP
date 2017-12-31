@@ -18,6 +18,27 @@ export const SegmentHandler =
                 success([])
             }
         )
+    },
+    addSegment:(param,success,failed)=>{
+        BaseHandler.postHttpRequest(
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.addTimeSegment),
+            param,
+            (successData)=>{
+                if(successData.status==0)
+                {
+                    success(successData)
+                }else {
+                    failed(successData)
+                }
+
+
+
+            },
+            (failedData)=>{
+                failed(failedData)
+            }
+        )
     }
+
 
 }

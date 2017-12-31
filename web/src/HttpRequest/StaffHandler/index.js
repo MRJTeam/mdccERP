@@ -18,6 +18,18 @@ export const StaffHandler =
                 success([])
             }
         )
+    },
+    addStaff:(param,success,failed)=>{
+        BaseHandler.postHttpRequest(
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.addStaff),
+            param,
+            (successData)=>{
+                success(successData)
+            },
+            (failed)=>{
+                success()
+            }
+        )
     }
 
 }

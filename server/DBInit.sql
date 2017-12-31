@@ -17,15 +17,25 @@ CREATE TABLE IF NOT EXISTS `table_channel_customer_binding` (
   PRIMARY KEY (`binding_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE IF NOT EXISTS `table_customer` (
+CREATE TABLE NOT EXISTS `table_customer` (
   `customer_id` varchar(11) NOT NULL COMMENT '意向客户id',
   `customer_name` varchar(20) NOT NULL COMMENT '意向客户名字',
+  `customer_telephone` varchar(11) DEFAULT NULL COMMENT '意向客户联系手机',
   `customer_create_time` timestamp(6) NULL DEFAULT NULL COMMENT '意向用户添加时间',
   `customer_deal_state` int(1) unsigned zerofill DEFAULT '0' COMMENT '状态是否为已签约',
   `customer_avtive` int(1) unsigned DEFAULT '1' COMMENT '做虚拟删除',
+  `customer_intention` varchar(255) DEFAULT NULL COMMENT '意向客户目的',
   PRIMARY KEY (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--CREATE TABLE IF NOT EXISTS `table_customer` (
+--  `customer_id` varchar(11) NOT NULL COMMENT '意向客户id',
+--  `customer_name` varchar(20) NOT NULL COMMENT '意向客户名字',
+--  `customer_create_time` timestamp(6) NULL DEFAULT NULL COMMENT '意向用户添加时间',
+--  `customer_deal_state` int(1) unsigned zerofill DEFAULT '0' COMMENT '状态是否为已签约',
+--  `customer_avtive` int(1) unsigned DEFAULT '1' COMMENT '做虚拟删除',
+--  PRIMARY KEY (`customer_id`)
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS  `table_segment` (
   `segment_id` varchar(11) NOT NULL COMMENT '分段时间id',

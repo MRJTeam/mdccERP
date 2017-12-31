@@ -13,7 +13,10 @@ const {
     getAllChannel,
     addChannel
     } = require('./channel')
-
+const  {
+    getAllSegment,
+    addTimeSegment
+    } = require('./segment')
 const {
     addStaff,
     getAllStaff
@@ -25,26 +28,27 @@ const {
     bindCustomerAndSegment,
     bindCustomerAndStaff,
     bindCustomerAndChannel
+
     } = require('./customer')
 const db = require('./DBConfig')
 const API_MAP = {
     //用户相关
     addCustomer: '/customer/addCustomer',//添加用户
-    editCustomer: '/customer/editCustomer',//编辑用户
+    //editCustomer: '/customer/editCustomer',//编辑用户
     updateCustomerStatus: '/customer/updateCustomerStatus',//更新用户状态
-    deleteCustomer: '/customer/deleteCustomer',//删除用户
+    //deleteCustomer: '/customer/deleteCustomer',//删除用户
     getAllCustomer: '/customer/getAllCustomer',//获取所有用户
 
     //渠道相关
     addChannel: '/channel/addChannel',//添加渠道
-    deleteChannel: '/channel/deleteChannel',//删除渠道
-    editChannel: '/channel/editChannel',//修改渠道
+    //deleteChannel: '/channel/deleteChannel',//删除渠道
+    //editChannel: '/channel/editChannel',//修改渠道
     getAllChannel: '/channel/getAllChannel',//获取所有渠道
 
     //员工相关
     addStaff: '/staff/addStaff',//添加员工
-    deleteStaff: '/staff/deleteStaff',//删除员工
-    editStaff: '/staff/editStaff',//添加员工
+    //deleteStaff: '/staff/deleteStaff',//删除员工
+    //editStaff: '/staff/editStaff',//修改员工
     getAllStaff: '/staff/getAllStaff',//获取所有员工信息
 
     addTimeSegment: '/segment/addSegment',//添加时段
@@ -96,13 +100,13 @@ const httCallBack = (req, res)=> {
         case API_MAP.updateCustomerStatus:
         {
             let param2 = req.objs;
-            const {customerId,status}  = param2
-            if (!customerId || !status) {
+            const {id,status}  = param2
+            if (!id || !status) {
                 res.send(packageData(STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
             } else {
-                let sqlParam = [customerId, status]
+                let sqlParam = [status,id]
 
-                sqlExecute(updateCustomerStatus(), null, (result)=> {
+                sqlExecute(updateCustomerStatus(), sqlParam, (result)=> {
                     if (result) {
                         res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                     } else {
@@ -117,18 +121,20 @@ const httCallBack = (req, res)=> {
             let resolve = (rest)=>{};
             let reject = (fail)=>{};
             let param = req.objs;
-            const {customerName,customerTelephone,staffId,segmentId,channelId}  = param
-            if (customerName && customerTelephone && staffId && segmentId && channelId) {
+            const {customerName,customerTelephone,staffId,segmentId,channelId,intention}  = param
+            if (customerName && customerTelephone && staffId && channelId) {
                 let customerId = getUuid();
-                const customerParam = [customerId, customerName, customerTelephone];
+                const customerParam = [customerId, customerName, customerTelephone,intention];
                 const bindCustomerAndStaffParam = [getUuid(), staffId, customerId];
                 const bindCustomerAndChannelParam = [getUuid(), channelId, customerId];
-                const bindCustomerAndSegmentParam = [getUuid(), segmentId, customerId];
-                let promiseCustomer = new Promise((resolve,reject)=>sqlExecute(addCustomer(),customerParam,resolve))
-                let promiseBindCustomerAndStaff = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndStaff(),bindCustomerAndStaffParam,resolve))
-                let promiseBindCustomerAndChannel = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndChannel(),bindCustomerAndChannelParam,resolve))
-                let promiseBindCustomerAndSegment = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,resolve))
-                const p = Promise.all([promiseCustomer, promiseBindCustomerAndStaff, promiseBindCustomerAndChannel,promiseBindCustomerAndSegment]);
+                //const bindCustomerAndSegmentParam = [getUuid(), segmentId, customerId];
+                let promiseCustomer = new Promise((resolve,reject)=>sqlExecute(addCustomer(),customerParam,resolve));
+                let promiseBindCustomerAndStaff = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndStaff(),bindCustomerAndStaffParam,resolve));
+
+                let promiseBindCustomerAndChannel = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndChannel(),bindCustomerAndChannelParam,resolve));
+
+                //let promiseBindCustomerAndSegment = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,resolve))
+                const p = Promise.all([promiseCustomer, promiseBindCustomerAndStaff, promiseBindCustomerAndChannel]);
                 let ok = true;
                 p.then((results)=>{
                     results.forEach((x)=>{
@@ -136,6 +142,7 @@ const httCallBack = (req, res)=> {
                     })
                     res.send(packageData(ok?STATUS_CODE.SUCCESS:STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
                 },(xxxx)=>{
+
                 })
             } else {
                 res.send(packageData(STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
@@ -187,6 +194,26 @@ const httCallBack = (req, res)=> {
             break;
         case API_MAP.getAllStaff:
             sqlExecute(getAllStaff(),null, (result)=> {
+                if (result) {
+                    res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
+                } else {
+                    res.send(packageData(STATUS_CODE.SERVER_ERROR, req.path, null))
+                }
+            })
+            break;
+        case API_MAP.getAllSegment:
+            sqlExecute(getAllSegment(),null, (result)=> {
+                if (result) {
+                    res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
+                } else {
+                    res.send(packageData(STATUS_CODE.SERVER_ERROR, req.path, null))
+                }
+            })
+            break;
+        case API_MAP.addTimeSegment:
+            let param = req.objs;
+            const {start,end,name}  = param
+            sqlExecute(addTimeSegment(),[getUuid(),start,end,name], (result)=> {
                 if (result) {
                     res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                 } else {

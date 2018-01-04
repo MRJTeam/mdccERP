@@ -40,7 +40,7 @@ const getAllCustomer = ()=>
 	LEFT JOIN table_staff K
 	ON K.staff_id = J.staff_id
 	GROUP BY id,staff,channel,segment,inviter,dealer
-	ORDER BY A.customer_create_time DESC
+	ORDER BY A.customer_deal_state,A.customer_create_time DESC
     `
 }
 

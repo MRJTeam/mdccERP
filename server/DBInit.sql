@@ -73,15 +73,22 @@ CREATE TABLE IF NOT EXISTS `table_user` (
 
 
 CREATE TABLE IF NOT EXISTS `table_inviter_customer_binding` (
-  `bing_id` VARCHAR(11) NOT NULL,
+  `binding_id` VARCHAR(11) NOT NULL,
   `customer_id` VARCHAR(11) NOT NULL,
   `staff_id` VARCHAR(11) NOT NULL,
   PRIMARY KEY (`bing_id`)
   )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `table_dealer_customer_binding` (
-  `bing_id` VARCHAR(11) NOT NULL,
+  `binding_id` VARCHAR(11) NOT NULL,
   `customer_id` VARCHAR(11) NOT NULL,
   `staff_id` VARCHAR(11) NOT NULL,
   PRIMARY KEY (`bing_id`)
+  )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `table_segment_customer_binding` (
+  `binding_id` VARCHAR(11) NOT NULL,
+  `customer_id` VARCHAR(11) NOT NULL,
+  `segment_id` VARCHAR(11) NOT NULL,
+  PRIMARY KEY (`binding_id`)
   )ENGINE=InnoDB DEFAULT CHARSET=utf8;

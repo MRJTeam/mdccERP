@@ -70,3 +70,18 @@ CREATE TABLE IF NOT EXISTS `table_user` (
   `user_active` int(1) unsigned DEFAULT '1' COMMENT '用户状态;用作虚拟删除',
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `table_inviter_customer_binding` (
+  `bing_id` VARCHAR(11) NOT NULL,
+  `customer_id` VARCHAR(11) NOT NULL,
+  `staff_id` VARCHAR(11) NOT NULL,
+  PRIMARY KEY (`bing_id`)
+  )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `table_dealer_customer_binding` (
+  `bing_id` VARCHAR(11) NOT NULL,
+  `customer_id` VARCHAR(11) NOT NULL,
+  `staff_id` VARCHAR(11) NOT NULL,
+  PRIMARY KEY (`bing_id`)
+  )ENGINE=InnoDB DEFAULT CHARSET=utf8;

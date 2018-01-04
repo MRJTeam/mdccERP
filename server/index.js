@@ -27,7 +27,9 @@ const {
     updateCustomerStatus,
     bindCustomerAndSegment,
     bindCustomerAndStaff,
-    bindCustomerAndChannel
+    bindCustomerAndChannel,
+    bingCustomerAndInviter,
+    bingCustomerAndDealer
 
     } = require('./customer')
 const db = require('./DBConfig')
@@ -100,19 +102,32 @@ const httCallBack = (req, res)=> {
         case API_MAP.updateCustomerStatus:
         {
             let param2 = req.objs;
-            const {id,status}  = param2
-            if (!id || !status) {
-                res.send(packageData(STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
-            } else {
-                let sqlParam = [status,id]
+            const {id,status,inviter,staffForDeal,segmentForDeal}  = param2
+            if (id && inviter && staffForDeal && segmentForDeal) {
+                let customerId = id;
+                const customerParam = [status,customerId];
+                const bindCustomerAndInviterParam = [getUuid(), inviter, customerId];
+                const bindCustomerAndDealParam = [getUuid(), staffForDeal, customerId];
+                const bindCustomerAndSegmentParam = [getUuid(), segmentForDeal, customerId];
 
-                sqlExecute(updateCustomerStatus(), sqlParam, (result)=> {
-                    if (result) {
-                        res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
-                    } else {
-                        res.send(packageData(STATUS_CODE.SERVER_ERROR, req.path, null))
-                    }
+                let promiseInviter = new Promise((resolve,reject)=>sqlExecute(bingCustomerAndInviter(),bindCustomerAndInviterParam,resolve));
+                let promiseDeal = new Promise((resolve,reject)=>sqlExecute(bingCustomerAndDealer(),bindCustomerAndDealParam,resolve));
+                let promiseSegmengt = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,resolve));
+                let promiseUpdateCustomer = new Promise((resolve,reject)=>sqlExecute(updateCustomerStatus(),customerParam,resolve));
+
+
+                const p = Promise.all([promiseInviter, promiseDeal, promiseSegmengt,promiseUpdateCustomer]);
+                let ok = true;
+                p.then((results)=>{
+                    results.forEach((x)=>{
+                        ok = ok&&x;
+                    })
+                    res.send(packageData(ok?STATUS_CODE.SUCCESS:STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
+                },(xxxx)=>{
+
                 })
+            } else {
+                res.send(packageData(STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
             }
         }
             break;
@@ -127,13 +142,10 @@ const httCallBack = (req, res)=> {
                 const customerParam = [customerId, customerName, customerTelephone,intention];
                 const bindCustomerAndStaffParam = [getUuid(), staffId, customerId];
                 const bindCustomerAndChannelParam = [getUuid(), channelId, customerId];
-                //const bindCustomerAndSegmentParam = [getUuid(), segmentId, customerId];
                 let promiseCustomer = new Promise((resolve,reject)=>sqlExecute(addCustomer(),customerParam,resolve));
                 let promiseBindCustomerAndStaff = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndStaff(),bindCustomerAndStaffParam,resolve));
 
                 let promiseBindCustomerAndChannel = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndChannel(),bindCustomerAndChannelParam,resolve));
-
-                //let promiseBindCustomerAndSegment = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,resolve))
                 const p = Promise.all([promiseCustomer, promiseBindCustomerAndStaff, promiseBindCustomerAndChannel]);
                 let ok = true;
                 p.then((results)=>{

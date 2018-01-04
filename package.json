@@ -29,13 +29,14 @@
     "css-loader": "^0.28.7",
     "express": "^4.16.2",
     "jquery": "^3.2.1",
+    "js-export-excel": "^1.0.3",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
     "mysql": "^2.15.0",
     "promise-polyfill": "^7.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "style-loader": "^0.19.1",
-    "react-validation": "^3.0.7"
+    "react-validation": "^3.0.7",
+    "style-loader": "^0.19.1"
   }
 }

@@ -24,11 +24,13 @@ export const SegmentHandler =
             BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.addTimeSegment),
             param,
             (successData)=>{
-                if(successData.status==0)
+
+                let data = successData.data;
+                if(data.status==0)
                 {
-                    success(successData)
+                    success(data)
                 }else {
-                    failed(successData)
+                    failed(data)
                 }
 
 

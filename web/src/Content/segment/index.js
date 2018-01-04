@@ -61,7 +61,7 @@ export  default class SegmentViewController extends Component {
 
     okClicked() {
         if (valiedString(this.state.segmentName, 20)&&this.state.start&&this.state.end) {
-            SegmentHandler.addSegment({start:this.state.start,end:this.state.end,name:this.state.segmentName},()=>this.props.delegate&&this.props.delegate(),()=>{});
+            SegmentHandler.addSegment({start:this.state.start,end:this.state.end,name:this.state.segmentName},this.delegate.bind(this),()=>{});
             this.setState({visible: false})
         } else {
             message.warning('请输入有效的内容', 1);
@@ -78,6 +78,7 @@ export  default class SegmentViewController extends Component {
         )
     }
     delegate() {
+        console.log('laomi');
         if (this.props.delegate) {
             this.props.delegate()
         }

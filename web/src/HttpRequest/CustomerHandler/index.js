@@ -72,5 +72,23 @@ export const CustomerHandler =
                 failed(successData);
             }
         )
+    },
+    checkPhoneExist:(param,success,failed)=>{
+        BaseHandler.postHttpRequest(
+            BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.checkCustomerPhone),
+            param,
+            (successData)=>{
+                let data = successData.data;
+                if(data.status==0)
+                {
+                    success(data.data)
+                }else {
+                    failed(successData);
+                }
+            },
+            (failedData)=>{
+                failed(failedData);
+            }
+        )
     }
 }

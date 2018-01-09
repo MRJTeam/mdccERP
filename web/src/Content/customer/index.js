@@ -60,6 +60,11 @@ export  default class CustomerViewController extends Component {
                 intention: 'segment',
                 key: 'segment',
                 render: (x,y,z)=>x?x:'-',
+            },{
+                title: '访问次数',
+                dataIndex: 'times',
+                intention: 'times',
+                key: 'times',
             },
                 {
                 title: '成交状态',
@@ -181,6 +186,23 @@ export  default class CustomerViewController extends Component {
 
         )
     }
+    checkNumber()
+    {
+        if(checkPhone(this.state.customerPhone))
+        {
+            CustomerHandler.checkPhoneExist({phone:this.state.customerPhone},(data)=>{
+                if(data){
+                    message.warning('号码已经存在,再次添加只会让访问次数增加一次',1);
+                }else {
+                    message.success('号码状况正常',1);
+                }
+            },(failed)=>{
+                message.warning('网络异常',1);
+            })
+        }else {
+            message.warning('请输入有效的电话号码',1);
+        }
+    }
     model()
     {
         return (
@@ -195,7 +217,11 @@ export  default class CustomerViewController extends Component {
                     <h5><span>客户姓名</span><span style={{color:'#f00',fontSize:'14px'}}>&nbsp;*</span></h5>
                     <Input placeholder="客户姓名" name="customerName" onInput={(e)=>this.setState({customerName:e.target.value})}/>
                     <h5><span>客户电话</span><span style={{color:'#f00',fontSize:'14px'}}>&nbsp;*</span></h5>
-                    <Input placeholder="客户电话" name="customerPhone" onInput={(e)=>this.setState({customerPhone:e.target.value})}/>
+                    <div style={{flexDirection:'row',display:'flex'}}>
+                        <Input style={{marginRight:10}} placeholder="客户电话" name="customerPhone" onInput={(e)=>this.setState({customerPhone:e.target.value})}/>
+                        <Button type="primary"  onClick = {this.checkNumber.bind(this)} >验证</Button>
+                    </div>
+
                     <h5><span>渠道</span><span style={{color:'#f00',fontSize:'14px'}}>&nbsp;*</span></h5>
                     <div>
                         <Select  style={{ width: 240 }} onChange={(v)=>{this.setState({channel:v})}}>

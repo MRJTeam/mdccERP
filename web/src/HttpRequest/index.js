@@ -10,6 +10,7 @@ const API_MAP = {
     updateCustomerStatus: '/customer/updateCustomerStatus',//更新用户状态
     deleteCustomer: '/customer/deleteCustomer',//删除用户
     getAllCustomer: '/customer/getAllCustomer',//获取所有用户
+    checkCustomerPhone: '/customer/checkPhoneExist',//验证号码是否已经存在
 
     //渠道相关
     addChannel: '/channel/addChannel',//添加渠道
@@ -25,6 +26,9 @@ const API_MAP = {
 
     addTimeSegment: '/segment/addSegment',//添加时段
     getAllSegment: '/segment/getAllSegment',//获取时段
+
+    //验证用户登录
+    login: '/user/login',
 }
 const BaseHandler = {
     baseURL:'http://localhost:9527',
@@ -55,6 +59,16 @@ const BaseHandler = {
                 console.log(error);
             });
     },
+    putHttpRequest:(url,params,success,failed)=>{
+        axios.put(url,params).then((response)=>{
+                console.log(response);
+                success(response);
+            })
+            .catch((error)=> {
+                fail(error)
+                console.log(error);
+            });
+    }
 }
 
 

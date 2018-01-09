@@ -1,29 +1,20 @@
 import {BaseHandler,API_MAP} from '../index'
 
-export const userHander={
-  isAdmin:(success,failed)=>{
+export const UserHander={
+  login:(param,success,failed)=>{
     BaseHandler.postHttpRequest(
-      BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.isAdmin),
-      {},
+      BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.login),param,
       (successData)=>{
-        let data = successData.data;
-        success(data&&data.data?data.data:[])
+          if(successData&&successData.data)
+          {
+              success(successData.data)
+          }
+
     },
-    (failed)=>{
-        success([])
+    (failedData)=>{
+        failed(failedData)
     }
     )
-  },
-  addAdmin:(success,failed)=>{
-    BaseHandler.postHttpRequest(
-      BaseHandler.customUrlAndApi(BaseHandler.baseURL,API_MAP.addAdmin),
-      param,
-      (successData)=>{
-          success(successData)
-      },
-      (failed)=>{
-          success()
-      }
-    )
   }
+
 }

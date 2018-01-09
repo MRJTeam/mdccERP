@@ -190,6 +190,15 @@ export  default class CustomerViewController extends Component {
     {
         if(checkPhone(this.state.customerPhone))
         {
+            CustomerHandler.checkPhoneExist({phone:this.state.customerPhone},(data)=>{
+                if(data){
+                    message.warning('号码已经存在,再次添加只会让访问次数增加一次',1);
+                }else {
+                    message.success('号码状况正常',1);
+                }
+            },(failed)=>{
+                message.warning('网络异常',1);
+            })
         }else {
             message.warning('请输入有效的电话号码',1);
         }

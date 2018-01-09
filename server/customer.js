@@ -45,9 +45,35 @@ const getAllCustomer = ()=>
     `
 }
 
+/**
+ * 更新用户状态
+ * @returns {string}
+ */
 const  updateCustomerStatus = ()=>{
     return "UPDATE table_customer A SET A.customer_deal_state = ? WHERE A.customer_id = ?";
 }
+/**
+ * 检查手机号是否已存在
+ * @returns {*}
+ */
+const  checkPhoneExits = ()=>{
+    return `SELECT  A.customer_id as id,
+    A.customer_name as name,
+    A.customer_telephone as phone,
+    A.customer_deal_state as status,
+    A.customer_times as times,
+    DATE_FORMAT(A.customer_create_time,'%Y-%m-%d') as date,
+    A.customer_intention as intention
+    FROM table_customer A  WHERE A.customer_telephone = ?`;
+}
+/**
+ * 更新最后一次访问时间
+ * @returns {*}
+ */
+const  updateVistTimes = ()=>{
+    return `UPDATE table_customer A SET A.customer_create_time = ?, A.customer_times = A.customer_times+1 WHERE A.customer_id = ?`;
+}
+
 
 const bingCustomerAndInviter = ()=>{
     return "INSERT INTO table_inviter_customer_binding " +
@@ -89,5 +115,7 @@ module.exports = {
     bindCustomerAndStaff,
     bindCustomerAndChannel,
     bingCustomerAndInviter,
-    bingCustomerAndDealer
+    bingCustomerAndDealer,
+    updateVistTimes,
+    checkPhoneExits
 }

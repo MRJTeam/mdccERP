@@ -13,7 +13,7 @@ const {
     getAllChannel,
     addChannel
     } = require('./channel')
-const  {
+const {
     getAllSegment,
     addTimeSegment
     } = require('./segment')
@@ -29,14 +29,15 @@ const {
     bindCustomerAndStaff,
     bindCustomerAndChannel,
     bingCustomerAndInviter,
-    bingCustomerAndDealer
+    bingCustomerAndDealer,
+    updateVistTimes,
+    checkPhoneExits
 
     } = require('./customer')
 
 const {
-    isAdmin,
-    addAdmin
-} = require('./user')
+    checkUserExist
+    } = require('./user')
 
 const db = require('./DBConfig')
 const API_MAP = {
@@ -46,6 +47,8 @@ const API_MAP = {
     updateCustomerStatus: '/customer/updateCustomerStatus',//更新用户状态
     //deleteCustomer: '/customer/deleteCustomer',//删除用户
     getAllCustomer: '/customer/getAllCustomer',//获取所有用户
+    checkPhoneExist: '/customer/checkPhoneExist',//检查手机号是否注册过
+    updateVistTimes: '/customer/uopdateVistTimes',//更新访问次数
 
     //渠道相关
     addChannel: '/channel/addChannel',//添加渠道
@@ -62,10 +65,9 @@ const API_MAP = {
     addTimeSegment: '/segment/addSegment',//添加时段
     getAllSegment: '/segment/getAllSegment',//获取时段
 
-    
+
     //验证管理员登录
-    isAdmin:'/user/isAdmin',
-    addAdmin:'/user/addAdmin'
+    login: '/user/login',
 
 }
 const STATUS_CODE = {
@@ -82,6 +84,11 @@ const STATUS_CODE = {
     SEGMENT_PARAM_ERROR: -4000,//分段部分参数错误
 
 
+    USER_PARAM_ERROR: -5000,//用户登录部分参数错误
+
+
+
+
 }
 
 const HTTPMETHOD = {
@@ -93,7 +100,7 @@ const HTTPMETHOD = {
 const getCallBack = (req, res)=> {
     httCallBack(req, res);
 }
-const postCallBack =(req, res)=> {
+const postCallBack = (req, res)=> {
     httCallBack(req, res);
 }
 const httCallBack = (req, res)=> {
@@ -103,6 +110,23 @@ const httCallBack = (req, res)=> {
         return;
     }
     switch (req.path) {
+        case API_MAP.login:
+        {
+            let param = req.objs;
+            const {name,password} = param;
+            let sqlParam = [name, password]
+            sqlExecute(checkUserExist(), sqlParam, (result)=> {
+                if(result&&result.length>0)
+                {
+                    res.send(packageData(STATUS_CODE.SUCCESS, req.path, result[0]))
+                }else if(result){
+                    res.send(packageData(STATUS_CODE.USER_PARAM_ERROR, req.path, null))
+                }else {
+                    res.send(packageData(STATUS_CODE.SERVER_ERROR, req.path, null))
+                }
+            })
+        }
+            break;
         case API_MAP.getAllCustomer:
             sqlExecute(getAllCustomer(), null, (result)=> {
                 if (result) {
@@ -118,25 +142,25 @@ const httCallBack = (req, res)=> {
             const {id,status,inviter,staffForDeal,segmentForDeal}  = param2
             if (id && inviter && staffForDeal && segmentForDeal) {
                 let customerId = id;
-                const customerParam = [status,customerId];
+                const customerParam = [status, customerId];
                 const bindCustomerAndInviterParam = [getUuid(), inviter, customerId];
                 const bindCustomerAndDealParam = [getUuid(), staffForDeal, customerId];
                 const bindCustomerAndSegmentParam = [getUuid(), segmentForDeal, customerId];
 
-                let promiseInviter = new Promise((resolve,reject)=>sqlExecute(bingCustomerAndInviter(),bindCustomerAndInviterParam,resolve));
-                let promiseDeal = new Promise((resolve,reject)=>sqlExecute(bingCustomerAndDealer(),bindCustomerAndDealParam,resolve));
-                let promiseSegmengt = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndSegment(),bindCustomerAndSegmentParam,resolve));
-                let promiseUpdateCustomer = new Promise((resolve,reject)=>sqlExecute(updateCustomerStatus(),customerParam,resolve));
+                let promiseInviter = new Promise((resolve, reject)=>sqlExecute(bingCustomerAndInviter(), bindCustomerAndInviterParam, resolve));
+                let promiseDeal = new Promise((resolve, reject)=>sqlExecute(bingCustomerAndDealer(), bindCustomerAndDealParam, resolve));
+                let promiseSegmengt = new Promise((resolve, reject)=>sqlExecute(bindCustomerAndSegment(), bindCustomerAndSegmentParam, resolve));
+                let promiseUpdateCustomer = new Promise((resolve, reject)=>sqlExecute(updateCustomerStatus(), customerParam, resolve));
 
 
-                const p = Promise.all([promiseInviter, promiseDeal, promiseSegmengt,promiseUpdateCustomer]);
+                const p = Promise.all([promiseInviter, promiseDeal, promiseSegmengt, promiseUpdateCustomer]);
                 let ok = true;
-                p.then((results)=>{
-                    results.forEach((x)=>{
-                        ok = ok&&x;
+                p.then((results)=> {
+                    results.forEach((x)=> {
+                        ok = ok && x;
                     })
-                    res.send(packageData(ok?STATUS_CODE.SUCCESS:STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
-                },(xxxx)=>{
+                    res.send(packageData(ok ? STATUS_CODE.SUCCESS : STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
+                }, (xxxx)=> {
 
                 })
             } else {
@@ -146,27 +170,29 @@ const httCallBack = (req, res)=> {
             break;
         case API_MAP.addCustomer:
         {
-            let resolve = (rest)=>{};
-            let reject = (fail)=>{};
+            let resolve = (rest)=> {
+            };
+            let reject = (fail)=> {
+            };
             let param = req.objs;
-            const {customerName,customerTelephone,staffId,segmentId,channelId,intention}  = param
+            const {customerName,customerTelephone,staffId,channelId,intention}  = param
             if (customerName && customerTelephone && staffId && channelId) {
                 let customerId = getUuid();
-                const customerParam = [customerId, customerName, customerTelephone,intention];
+                const customerParam = [customerId, customerName, customerTelephone, intention];
                 const bindCustomerAndStaffParam = [getUuid(), staffId, customerId];
                 const bindCustomerAndChannelParam = [getUuid(), channelId, customerId];
-                let promiseCustomer = new Promise((resolve,reject)=>sqlExecute(addCustomer(),customerParam,resolve));
-                let promiseBindCustomerAndStaff = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndStaff(),bindCustomerAndStaffParam,resolve));
+                let promiseCustomer = new Promise((resolve, reject)=>sqlExecute(addCustomer(), customerParam, resolve));
+                let promiseBindCustomerAndStaff = new Promise((resolve, reject)=>sqlExecute(bindCustomerAndStaff(), bindCustomerAndStaffParam, resolve));
 
-                let promiseBindCustomerAndChannel = new Promise((resolve,reject)=>sqlExecute(bindCustomerAndChannel(),bindCustomerAndChannelParam,resolve));
+                let promiseBindCustomerAndChannel = new Promise((resolve, reject)=>sqlExecute(bindCustomerAndChannel(), bindCustomerAndChannelParam, resolve));
                 const p = Promise.all([promiseCustomer, promiseBindCustomerAndStaff, promiseBindCustomerAndChannel]);
                 let ok = true;
-                p.then((results)=>{
-                    results.forEach((x)=>{
-                        ok = ok&&x;
+                p.then((results)=> {
+                    results.forEach((x)=> {
+                        ok = ok && x;
                     })
-                    res.send(packageData(ok?STATUS_CODE.SUCCESS:STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
-                },(xxxx)=>{
+                    res.send(packageData(ok ? STATUS_CODE.SUCCESS : STATUS_CODE.CUSTOMER_PARAM_ERROR, req.path, null))
+                }, (xxxx)=> {
 
                 })
             } else {
@@ -187,13 +213,26 @@ const httCallBack = (req, res)=> {
         {
             let param = req.objs;
             const {name,descrpition}  = param
-            console.log(param);
             let sqlParam = [getUuid(), name, descrpition]
             if (!name) {
                 res.send(packageData(STATUS_CODE.CHANNEL_PARAM_ERROR, req.path, null))
             } else {
                 sqlExecute(addChannel(), sqlParam, (result)=> {
                     res.send(packageData(result ? STATUS_CODE.SUCCESS : STATUS_CODE.SERVER_ERROR, req.path, null))
+                })
+            }
+        }
+            break;
+        case API_MAP.checkPhoneExist:
+        {
+            let param = req.objs;
+            const {phone}  = param
+            const sqlParam = [phone];
+            if (!phone) {
+                res.send(packageData(STATUS_CODE.CHANNEL_PARAM_ERROR, req.path, null))
+            } else {
+                sqlExecute(checkPhoneExits(), sqlParam, (result)=> {
+                    res.send(packageData(result ? STATUS_CODE.SUCCESS : STATUS_CODE.SERVER_ERROR, req.path, result))
                 })
             }
         }
@@ -218,7 +257,7 @@ const httCallBack = (req, res)=> {
         }
             break;
         case API_MAP.getAllStaff:
-            sqlExecute(getAllStaff(),null, (result)=> {
+            sqlExecute(getAllStaff(), null, (result)=> {
                 if (result) {
                     res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                 } else {
@@ -227,7 +266,7 @@ const httCallBack = (req, res)=> {
             })
             break;
         case API_MAP.getAllSegment:
-            sqlExecute(getAllSegment(),null, (result)=> {
+            sqlExecute(getAllSegment(), null, (result)=> {
                 if (result) {
                     res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                 } else {
@@ -238,7 +277,7 @@ const httCallBack = (req, res)=> {
         case API_MAP.addTimeSegment:
             let param = req.objs;
             const {start,end,name}  = param
-            sqlExecute(addTimeSegment(),[getUuid(),start,end,name], (result)=> {
+            sqlExecute(addTimeSegment(), [getUuid(), start, end, name], (result)=> {
                 if (result) {
                     res.send(packageData(STATUS_CODE.SUCCESS, req.path, result))
                 } else {
@@ -306,7 +345,7 @@ function uuid(len, radix) {
 
     return uuid.join('');
 }
-app.all('*',(req, res,next)=>{
+app.all('*', (req, res, next)=> {
 
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type");

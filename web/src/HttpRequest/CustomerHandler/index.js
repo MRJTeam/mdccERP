@@ -81,13 +81,13 @@ export const CustomerHandler =
                 let data = successData.data;
                 if(data.status==0)
                 {
-                    success(data)
+                    success(data.data)
                 }else {
                     failed(successData);
                 }
             },
             (failedData)=>{
-                failed(successData);
+                failed(failedData);
             }
         )
     }

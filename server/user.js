@@ -1,12 +1,8 @@
 //验证管理人员登录
-isAdmin = () => {
-  return `SELECT user_name,user_password FROM table_user`
+checkUserExist = () => {
+  return `SELECT user_id as userId, user_name as userName, user_nickname as nickName,user_password as password FROM table_user WHERE user_name = ? AND user_password = ?`
 }
-addAdmin = () => {
-  return `INSERT INTO table_user 
-          ("user_name","user_password","") VALUES (?,?)`
-}
+
 module.exports = {
-  isAdmin,
-  addAdmin
+  checkUserExist
 }

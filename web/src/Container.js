@@ -36,95 +36,125 @@ export default class Container extends Component {
 
         this.state = {
             currentIndex: 1,//单页应用;表示当前展示是那一页的内容
-            customer:[],
-            staff:[],
-            channel:[],
-            segment:[],
+            customer: [],
+            staff: [],
+            channel: [],
+            segment: [],
+            loginStatus:this.requireAuth(),
+            nickName:null,
         }
     }
+
+    requireAuth() {
+        return 0
+    }
     render() {
-        console.log(this.state.currentIndex);
         return (
-            <div style={{flex:1,display:'flex',flexDirection:'column',alignContent:'space-between',minHeight:'100%'}}>
-                <Top name="老米"/>
-                <div style={{flex:1,boxFlex:1,flexDirection:'row',display:'-webkit-flex',diaplsy:'flex',alignItems:"stretch"}}>
-                    {/* <div style={{alignItems:"stretch",backgroundColor:'#001529',color:'#fff!important'}}>
+            this.state.loginStatus==0?this.login():this.getContent()
+        )
+    }
+
+    getContent() {
+        return (
+            <div
+                style={{flex:1,display:'flex',flexDirection:'column',alignContent:'space-between',minHeight:'100%'}}>
+                <Top name={this.state.nickName}/>
+                <div
+                    style={{flex:1,boxFlex:1,flexDirection:'row',display:'-webkit-flex',diaplsy:'flex',alignItems:"stretch"}}>
+                    <div style={{alignItems:"stretch",backgroundColor:'#001529',color:'#fff!important'}}>
                         {this.menuPart()}
                     </div>
                     <div style={{flex:1,alignContent:'flex-end',alignItems:"stretch"}}>
-                         {this.content(this.state.currentIndex)}
-                     </div> */}
-                     <SignIn />
-                 </div>
+                        {this.content(this.state.currentIndex)}
+                    </div>
+
+                </div>
                 <Buttom style={{alignSelf:'flex-end',display:'flex'}}/>
-                
             </div>
+
         )
     }
+
+    login() {
+        return (
+
+            <div style={{flex:1,display:'flex',flexDirection:'column',minHeight:'100%'}}>
+                <SignIn delegate={(nickName)=>this.setState({
+                    loginStatus:1,
+                    nickName:nickName
+                })}/>
+                <Buttom style={{alignSelf:'flex-end',display:'flex'}}/>
+            </div>
+
+        )
+    }
+
     menuPart() {
 
         return (
-            <Menu defaultSelectedKeys = {['1']} style={{width:150}} theme='dark' onClick={(item)=>this.setState({currentIndex:item.key})}>
+            <Menu defaultSelectedKeys={['1']} style={{width:150}} theme='dark'
+                  onClick={(item)=>this.setState({currentIndex:item.key})}>
                 {
-                    menu.map((x,i)=>{
+                    menu.map((x, i)=> {
                         return (<Menu.Item key={i+1}>{x}</Menu.Item>)
                     })
                 }
             </Menu>
         )
     }
-    componentDidMount()
-    {
+
+    componentDidMount() {
         this.loadData();
     }
-    loadData()
-    {
+
+    loadData() {
         this.loadCustomer();
         this.loadChannel();
         this.loadSegment();
         this.loadStaff();
     }
-    loadStaff()
-    {
-        StaffHandler.getAllStaff((data)=>{
+
+    loadStaff() {
+        StaffHandler.getAllStaff((data)=> {
             this.setState({
-                staff:data
+                staff: data
             })
-        },(faile)=>{
+        }, (faile)=> {
 
         })
     }
-    loadSegment()
-    {
-        SegmentHandler.getAllSegment((data)=>{
+
+    loadSegment() {
+        SegmentHandler.getAllSegment((data)=> {
             console.log(data)
             this.setState({
-                segment:data
+                segment: data
             })
-        },(faile)=>{
+        }, (faile)=> {
 
         })
     }
-    loadChannel()
-    {
-        ChannelHandler.getAllChannel((data)=>{
+
+    loadChannel() {
+        ChannelHandler.getAllChannel((data)=> {
             this.setState({
-                channel:data
+                channel: data
             })
-        },(faile)=>{
+        }, (faile)=> {
 
         })
     }
-    loadCustomer()
-    {
-        CustomerHandler.getAllCustomer((data)=>{
+
+    loadCustomer() {
+        CustomerHandler.getAllCustomer((data)=> {
             this.setState({
-                customer:data
+                customer: data
             })
-        },(faile)=>{
+        }, (faile)=> {
 
         })
     }
+
     content(index) {
         switch (parseInt(index)) {
             case 1:
@@ -140,7 +170,7 @@ export default class Container extends Component {
                 break;
             case 2:
                 return (<div>
-                    <SegmentViewController segment={this.state.segment} delegate={()=>this.loadSegment()} />
+                    <SegmentViewController segment={this.state.segment} delegate={()=>this.loadSegment()}/>
                 </div>)
                 break;
             case 3:
